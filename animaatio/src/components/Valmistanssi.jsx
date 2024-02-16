@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
 
 const Valmistanssi = (props) => {
@@ -7,9 +7,19 @@ const Valmistanssi = (props) => {
     const { actions, names } = useAnimations(animations, group);
     console.log(names);
 
+    const [anim, setAnim] = useState(1);
+
     useEffect(() => {
-        actions[names[1]].reset().fadeIn(0.5).play();
-    }, []);
+        console.log(`playing animation ${names[anim]}`);
+        actions[names[anim]].reset().fadeIn(0.5).play();
+        return () => {
+            actions[names[anim]].fadeOut(0.5);
+        };
+    }, [anim]);
+
+    window.animtoggle = () => {
+        setAnim((anim + 1) % names.length);
+    };
 
     return (
         <group ref={group} {...props} dispose={null}>
